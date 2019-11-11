@@ -18,7 +18,7 @@ import { VueComponentActivatedMixin } from './VueComponentActivatedMixin.js'
  * @property {options} VueSmoothRevealOptions
  * @property {IntersectionObserverInit} intersectionObserverOptions
  */
-class VueSmoothReveal {
+class SmoothReveal {
 
   /**
    * Default options
@@ -168,4 +168,4 @@ class VueSmoothReveal {
   }
 }
 
-export const SmoothReveal = new VueSmoothReveal()
+export const VueSmoothReveal = new SmoothReveal()
