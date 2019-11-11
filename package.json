@@ -1,0 +1,17 @@
+{
+  "name": "vue-smooth-reveal",
+  "version": "0.1.0",
+  "description": "Vue.js plug-in inspired by scrollreveal/scrollreveal.",
+  "main": "src/VueSmoothReveal.js",
+  "repository": "https://github.com/barthy-koeln/vue-smooth-reveal",
+  "author": "Barthy Bonhomme <post@barthy.koeln>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "core-js": "^3",
+    "imagesloaded": "^4.1.4",
+    "miniraf": "^1.0.1",
+    "rematrix": "^0.4.1",
+    "vue": "^2.6.10"
+  }
+}
