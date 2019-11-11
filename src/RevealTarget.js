@@ -1,5 +1,4 @@
-import {translate, scale, parse, multiply, toString} from 'rematrix'
-
+import {translate as matrixTranslate, scale as matrixScale, fromString as matrixFromString, multiply as matrixMultiply, toString as matrixToString} from 'rematrix'
 import miniraf     from 'miniraf'
 
 /**
@@ -38,16 +37,16 @@ export class RevealTarget {
     const x = origin === 'l' ? -distance : (origin === 'r' ? distance : 0)
     const y = origin === 't' ? -distance : (origin === 'b' ? distance : 0)
 
-    const transform = translate(x, y)
-    const scale     = scale(0.99)
+    const transform = matrixTranslate(x, y)
+    const scale     = matrixScale(0.99)
 
     const final = [
-      parse(this.initialTransform),
+      matrixFromString(this.initialTransform),
       transform,
       scale
-    ].reduce(multiply)
+    ].reduce(matrixMultiply)
 
-    this.offsetTransform = toString(final)
+    this.offsetTransform = matrixToString(final)
   }
 
   /**

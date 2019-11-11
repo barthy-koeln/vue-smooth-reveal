@@ -131,6 +131,9 @@ class SmoothReveal {
    */
   listenAndObserve (revealTarget) {
     const $self = this
+
+    $self.startObserving(revealTarget)
+
     revealTarget.vnode.context.$on('sr-activated', function () {
       revealTarget.hideElement()
       $self.startObserving(revealTarget)
