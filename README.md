@@ -5,8 +5,8 @@ Vue.js plug-in inspired by [scrollreveal/scrollreveal](https://github.com/scroll
 ## Usage
 
 ```js
-import Vue             from 'vue'
-import VueSmoothReveal from 'vue-smooth-reveal'
+import Vue                 from 'vue'
+import { VueSmoothReveal } from 'vue-smooth-reveal'
 
 Vue.use(VueSmoothReveal, {
   offset: {
