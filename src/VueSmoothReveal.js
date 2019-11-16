@@ -1,5 +1,3 @@
-import 'core-js/features/object/assign'
-
 import ImagesLoaded                   from 'imagesloaded'
 import { RevealTarget }               from './RevealTarget.js'
 import { VueComponentActivatedMixin } from './VueComponentActivatedMixin.js'

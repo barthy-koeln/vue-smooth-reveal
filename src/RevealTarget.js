@@ -4,8 +4,7 @@ import {
   scale as matrixScale,
   toString as matrixToString,
   translate as matrixTranslate
-}              from 'rematrix'
-import miniraf from 'miniraf'
+} from 'rematrix'
 
 /**
  * Handles the smooth revelation of a DOM node
@@ -83,7 +82,7 @@ export class RevealTarget {
       $self.element.style.opacity   = '0'
       $self.element.style.transform = $self.offsetTransform
 
-      miniraf(function () {
+      window.requestAnimationFrame(function () {
         $self.element.style.transition = `transform ${transformOptions}, opacity ${transformOptions}`
         $self.element.style.visibility = 'visible'
         resolve()

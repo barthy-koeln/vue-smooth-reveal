@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-core-js@^3:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.4.0.tgz#29ea478601789c72f2978e9bb98f43546f89d3aa"
-  integrity sha512-lQxb4HScV71YugF/X28LtePZj9AB7WqOpcB+YztYxusvhrgZiQXPmCYfPC5LHsw/+ScEtDbXU3xbqH3CjBRmYA==
-
 ev-emitter@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ev-emitter/-/ev-emitter-1.1.1.tgz#8f18b0ce5c76a5d18017f71c0a795c65b9138f2a"
@@ -18,11 +13,6 @@ imagesloaded@^4.1.4:
   integrity sha512-ltiBVcYpc/TYTF5nolkMNsnREHW+ICvfQ3Yla2Sgr71YFwQ86bDwV9hgpFhFtrGPuwEx5+LqOHIrdXBdoWwwsA==
   dependencies:
     ev-emitter "^1.0.0"
-
-miniraf@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/miniraf/-/miniraf-1.0.1.tgz#b74c9fcf5437b6fddaaa80de1544f96a6a03d8a1"
-  integrity sha512-2OVNqiGCiL3XaKMZQPHcE8f/89gnaEYQmQv5SHWz4eezyn0gHLBl8W8XGcy5G8Y+Gz1JUwysvj/grNy34nUOdQ==
 
 rematrix@^0.4.1:
   version "0.4.1"

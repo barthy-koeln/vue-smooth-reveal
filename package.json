@@ -8,9 +8,7 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "core-js": "^3",
     "imagesloaded": "^4.1.4",
-    "miniraf": "^1.0.1",
     "rematrix": "^0.4.1",
     "vue": "^2.6.10"
   }
