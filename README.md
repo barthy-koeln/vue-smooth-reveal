@@ -57,7 +57,7 @@ If you use the `wait` modifier, the plug-in will wait for the `sr-ready` event t
 <template>
     <div class="sr-base">
         <div class="sr-hidden"
-            v-smooth-reveal.wait:r1a
+            v-smooth-reveal:r1a.wait
         >
         </div>
     </div>
@@ -73,7 +73,7 @@ If you want to reveal an element once one of its parent's contained images load,
 <template>
     <div class="sr-base">
         <div class="sr-hidden"
-            v-smooth-reveal.parent:r1a
+            v-smooth-reveal:r1a.parent
         >
             <img src="/image.jpg" alt="the div will only reveal once this image is loaded">
         </div>

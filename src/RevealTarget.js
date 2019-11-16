@@ -1,5 +1,11 @@
-import {translate as matrixTranslate, scale as matrixScale, fromString as matrixFromString, multiply as matrixMultiply, toString as matrixToString} from 'rematrix'
-import miniraf     from 'miniraf'
+import {
+  fromString as matrixFromString,
+  multiply as matrixMultiply,
+  scale as matrixScale,
+  toString as matrixToString,
+  translate as matrixTranslate
+}              from 'rematrix'
+import miniraf from 'miniraf'
 
 /**
  * Handles the smooth revelation of a DOM node

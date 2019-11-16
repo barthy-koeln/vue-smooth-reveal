@@ -99,7 +99,6 @@ class SmoothReveal {
    * @param {VNode} vnode
    */
   vueComponentInserted (element, binding, vnode) {
-
     if (!this.bindingIsValid(binding)) {
       return
     }
