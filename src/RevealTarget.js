@@ -71,7 +71,7 @@ export class RevealTarget {
     const $self = this
 
     return new Promise(function (resolve) {
-      const transformOptions = `${$self.duration}ms ${$self.easing}`
+      const transitionOptions = `${$self.duration}ms ${$self.easing}`
 
       const computedStyle    = getComputedStyle($self.element)
       $self.initialTransform = computedStyle.transform
@@ -83,8 +83,8 @@ export class RevealTarget {
       $self.element.style.transform = $self.offsetTransform
 
       window.requestAnimationFrame(function () {
-        $self.element.style.transition = `transform ${transformOptions}, opacity ${transformOptions}`
-        $self.element.style.visibility = 'visible'
+        $self.element.style.transition = `transform ${transitionOptions}, opacity ${transitionOptions}`
+
         resolve()
       })
     })
@@ -100,6 +100,7 @@ export class RevealTarget {
 
     return new Promise(function (resolve) {
       setTimeout(function () {
+        $self.element.style.visibility = 'visible'
         $self.element.style.transform = $self.initialTransform
         $self.element.style.opacity   = $self.initialOpacity
         resolve()

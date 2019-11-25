@@ -1,6 +1,5 @@
-import ImagesLoaded                   from 'imagesloaded'
-import { RevealTarget }               from './RevealTarget.js'
-import { VueComponentActivatedMixin } from './VueComponentActivatedMixin.js'
+import ImagesLoaded     from 'imagesloaded'
+import { RevealTarget } from './RevealTarget.js'
 
 /**
  * @typedef  {object} VueSmoothRevealOptions
@@ -48,7 +47,7 @@ class SmoothReveal {
     if (!options) {
       this.options = defaultOptions
     } else {
-      options.offset = Object.assign({}, options.offset, defaultOptions.offset)
+      options.offset = Object.assign({}, defaultOptions.offset, options.offset)
       this.options   = Object.assign({}, defaultOptions, options)
     }
 
@@ -127,14 +126,8 @@ class SmoothReveal {
    * @param {RevealTarget} revealTarget
    */
   listenAndObserve (revealTarget) {
-    const $self = this
-
-    $self.startObserving(revealTarget)
-
-    revealTarget.vnode.context.$on('sr-activated', function () {
-      revealTarget.hideElement()
-      $self.startObserving(revealTarget)
-    })
+    revealTarget.hideElement()
+    this.startObserving(revealTarget)
   }
 
   /**
@@ -159,8 +152,6 @@ class SmoothReveal {
    */
   install (Vue, options) {
     this.setOptions(options)
-
-    Vue.mixin(VueComponentActivatedMixin)
 
     Vue.directive('smooth-reveal', {
       inserted: this.vueComponentInserted.bind(this),

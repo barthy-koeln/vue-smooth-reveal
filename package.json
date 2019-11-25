@@ -11,5 +11,8 @@
     "imagesloaded": "^4.1.4",
     "rematrix": "^0.4.1",
     "vue": "^2.6.10"
+  },
+  "devDependencies": {
+    "core-js": "^3"
   }
 }
