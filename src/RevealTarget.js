@@ -101,8 +101,8 @@ export class RevealTarget {
     return new Promise(function (resolve) {
       setTimeout(function () {
         $self.element.style.visibility = 'visible'
-        $self.element.style.transform = $self.initialTransform
-        $self.element.style.opacity   = $self.initialOpacity
+        $self.element.style.transform  = $self.initialTransform
+        $self.element.style.opacity    = $self.initialOpacity
         resolve()
       }, $self.delay)
     })
@@ -132,27 +132,30 @@ export class RevealTarget {
    * @return {HTMLElement}
    */
   getImagesLoadedElement () {
-    let imagesLoadedElement
+    if (this.imagesLoadedElement) {
+      return this.imagesLoadedElement
+    }
 
     if (this.modifiers.parent === true) {
-      imagesLoadedElement = this.element.closest('.sr-base')
+      this.imagesLoadedElement = this.element.closest('.sr-base')
     } else {
-      imagesLoadedElement = this.element
+      this.imagesLoadedElement = this.element
     }
 
     if (this.modifiers.first) {
-      imagesLoadedElement = imagesLoadedElement.querySelector('.sr-first-image')
+      this.imagesLoadedElement = this.imagesLoadedElement.querySelector('.sr-first-image')
     }
 
-    return imagesLoadedElement
+    return this.imagesLoadedElement
   }
 
   /**
    * Chain all necessary steps
+   * @return {Promise<void>}
    */
-  reveal () {
-    this.prepareElement()
-      .then(this.revealElement.bind(this))
-      .then(this.resetElement.bind(this))
+  async reveal () {
+    await this.prepareElement()
+    await this.revealElement()
+    await this.resetElement()
   }
 }

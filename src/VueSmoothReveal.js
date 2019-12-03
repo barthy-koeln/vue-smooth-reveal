@@ -114,9 +114,12 @@ class SmoothReveal {
 
     vnode.context.$nextTick(function () {
       new ImagesLoaded(
-        revealTarget.getImagesLoadedElement(), function () {
+        revealTarget.getImagesLoadedElement(),
+        function () {
           $self.listenAndObserve(revealTarget)
-        })
+          revealTarget.getImagesLoadedElement().dispatchEvent(new CustomEvent('images-loaded'))
+        }
+      )
     })
   }
 

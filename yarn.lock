@@ -19,6 +19,11 @@ imagesloaded@^4.1.4:
   dependencies:
     ev-emitter "^1.0.0"
 
+regenerator-runtime@^0.13.3:
+  version "0.13.3"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.3.tgz#7cf6a77d8f5c6f60eb73c5fc1955b2ceb01e6bf5"
+  integrity sha512-naKIZz2GQ8JWh///G7L3X6LaQUAMp2lvb1rvwwsURe/VXwD6VMfr+/1NuNw3ag8v2kY1aQ/go5SNn79O9JU7yw==
+
 rematrix@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/rematrix/-/rematrix-0.4.1.tgz#496d40b48c79dd3820bc40352b8d7bec44b32887"
