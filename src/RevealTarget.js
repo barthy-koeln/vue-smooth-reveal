@@ -131,21 +131,31 @@ export class RevealTarget {
    *
    * @return {HTMLElement}
    */
+  getBaseElement () {
+    if (this.baseElement) {
+      return this.baseElement
+    }
+
+    if (this.modifiers.parent === true) {
+      this.baseElement = this.element.closest('.sr-base')
+      return this.baseElement
+    }
+
+    this.baseElement = this.element
+    return this.baseElement
+  }
+
   getImagesLoadedElement () {
     if (this.imagesLoadedElement) {
       return this.imagesLoadedElement
     }
 
-    if (this.modifiers.parent === true) {
-      this.imagesLoadedElement = this.element.closest('.sr-base')
-    } else {
-      this.imagesLoadedElement = this.element
+    if (this.modifiers.first === true) {
+      this.imagesLoadedElement = this.getBaseElement().querySelector('.sr-first-image')
+      return this.imagesLoadedElement
     }
 
-    if (this.modifiers.first) {
-      this.imagesLoadedElement = this.imagesLoadedElement.querySelector('.sr-first-image')
-    }
-
+    this.imagesLoadedElement = this.getBaseElement()
     return this.imagesLoadedElement
   }
 

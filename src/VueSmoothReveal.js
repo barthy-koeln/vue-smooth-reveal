@@ -33,6 +33,7 @@ class SmoothReveal {
       distances: [30, 60],
       delays: [100, 350],
       duration: 600,
+      threshold: .5,
       easing: 'cubic-bezier(0.5, 0, 0, 1)'
     }
   }
@@ -51,7 +52,12 @@ class SmoothReveal {
       this.options   = Object.assign({}, defaultOptions, options)
     }
 
+    /**
+     *
+     * @type {IntersectionObserverInit}
+     */
     this.intersectionObserverOptions = {
+      threshold: this.options.threshold,
       rootMargin: `${this.options.offset.top}px ${this.options.offset.right}px ${this.options.offset.bottom}px ${this.options.offset.left}px`
     }
   }
@@ -117,7 +123,7 @@ class SmoothReveal {
         revealTarget.getImagesLoadedElement(),
         function () {
           $self.listenAndObserve(revealTarget)
-          revealTarget.getImagesLoadedElement().dispatchEvent(new CustomEvent('images-loaded'))
+          revealTarget.getBaseElement().dispatchEvent(new CustomEvent('images-loaded'))
         }
       )
     })
@@ -144,7 +150,7 @@ class SmoothReveal {
       this.intersectionObserverOptions
     )
 
-    observer.observe(revealTarget.element)
+    observer.observe(revealTarget.getBaseElement())
   }
 
   /**
