@@ -14,8 +14,13 @@ import { RevealTarget } from './RevealTarget.js'
  * Handles smooth revelation of DOM elements inspired by https://github.com/scrollreveal/scrollreveal
  * @property {options} VueSmoothRevealOptions
  * @property {IntersectionObserverInit} intersectionObserverOptions
+ * @property {WeakMap} imagesLoadedPromises
  */
 class SmoothReveal {
+
+  constructor () {
+    this.imagesLoadedPromises = new WeakMap()
+  }
 
   /**
    * Default options
@@ -101,7 +106,7 @@ class SmoothReveal {
    * @param {DirectiveBinding} binding
    * @param {VNode} vnode
    */
-  vueComponentInserted (element, binding, vnode) {
+  async vueComponentInserted (element, binding, vnode) {
     if (!this.bindingIsValid(binding)) {
       return
     }
@@ -118,15 +123,36 @@ class SmoothReveal {
       return
     }
 
-    vnode.context.$nextTick(function () {
+    await vnode.context.$nextTick()
+    await this.getOrCreateImagesLoadedPromise(revealTarget)
+
+    $self.listenAndObserve(revealTarget)
+  }
+
+  /**
+   *
+   * @param {RevealTarget} revealTarget
+   * @return {Promise<void>}
+   */
+  getOrCreateImagesLoadedPromise (revealTarget) {
+    const imagesLoadedElement = revealTarget.getImagesLoadedElement()
+    if (this.imagesLoadedPromises.has(imagesLoadedElement)) {
+      return this.imagesLoadedPromises.get(imagesLoadedElement)
+    }
+
+    const promise = new Promise(function (resolve) {
       new ImagesLoaded(
         revealTarget.getImagesLoadedElement(),
         function () {
-          $self.listenAndObserve(revealTarget)
           revealTarget.getBaseElement().dispatchEvent(new CustomEvent('images-loaded'))
+          resolve()
         }
       )
     })
+
+    this.imagesLoadedPromises.set(imagesLoadedElement, promise)
+
+    return promise
   }
 
   /**

@@ -6,6 +6,8 @@ import {
   translate as matrixTranslate
 } from 'rematrix'
 
+const BUFFER_TIME = 100
+
 /**
  * Handles the smooth revelation of a DOM node
  */
@@ -118,11 +120,13 @@ export class RevealTarget {
 
     return new Promise(function (resolve) {
       setTimeout(function () {
-        $self.element.style.removeProperty('transition')
-        $self.element.style.removeProperty('transform')
-        $self.element.style.removeProperty('opacity')
-        resolve()
-      }, $self.duration)
+        requestAnimationFrame(function () {
+          $self.element.style.removeProperty('transition')
+          $self.element.style.removeProperty('transform')
+          $self.element.style.removeProperty('opacity')
+          resolve()
+        })
+      }, $self.duration + BUFFER_TIME)
     })
   }
 
