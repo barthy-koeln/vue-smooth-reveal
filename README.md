@@ -96,3 +96,11 @@ In order to hide all elements that will be revealed later, add the following to 
     }
 }
 ```
+
+## Common Pitfalls
+
+Don't worry, I've lost some hair over these little mistakes myself:
+
+- Don't conditionally render the image but use a parent div as `.sr-base`. The `.sr-base` element is primarily used as a
+base element for `ImagesLoaded`. If the image is not yet added to the DOM, or doesn't yet have its final source, `ImagesLoaded`
+will report that all images have loaded and your elements will reveal prematurely.
