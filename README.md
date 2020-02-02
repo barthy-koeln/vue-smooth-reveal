@@ -9,16 +9,17 @@ import Vue                 from 'vue'
 import { VueSmoothReveal } from 'vue-smooth-reveal'
 
 Vue.use(VueSmoothReveal, {
+  threshold: .5,
   offset: {
     top: 0,
       right: 0,
       bottom: 0,
       left: 0
-    },
-    distances: [30, 60],
-    delays: [100, 350],
-    duration: 600,
-    easing: 'cubic-bezier(0.5, 0, 0, 1)'
+  },
+  distances: [30, 60],
+  delays: [100, 350],
+  duration: 600,
+  easing: 'cubic-bezier(0.5, 0, 0, 1)'
 })
 ```
 
