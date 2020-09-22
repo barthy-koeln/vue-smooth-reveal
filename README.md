@@ -12,9 +12,9 @@ Vue.use(VueSmoothReveal, {
   threshold: .5,
   offset: {
     top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0
+    right: 0,
+    bottom: 0,
+    left: 0
   },
   distances: [30, 60],
   delays: [100, 350],
@@ -32,16 +32,26 @@ Vue.use(VueSmoothReveal, {
 ```
 
 The binding argument consists of \[direction\]\[distance\]\[delay\].
+The example above, `v-smooth-reveal:r1a`, reveals an element from the `right`, a distance `1` of `30px` and a delay `a` of `100ms`.
 
 ## Options
 
-You can define all options shown above. The snippet above also show the default values.
-You can add up to 26 different distances and delays. The will respectively be referenced using 1-26 and a-z.
+You can define all options shown below. The snippet above also shows the default values.
+You can add up to 26 different distances and delays. They will respectively be referenced using 1-26 and a-z.
+
+| Name        | Type     | Default                                  | Description                                                                                                                                                |
+|-------------|----------|------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `threshold` | Number   | `0.5`                                    | How much of the element must be in the viewport before the element is revealed. This corresponds to the  `threshold` option of the `IntersectionObserver`. |
+| `offset`    | Object   | `{top: 0, right: 0, bottom: 0, left: 0}` | Offset values corresponding to the `rootMargin` options of the `IntersectionObserver`.                                                                     |
+| `distances` | Number[] | `[30, 60]`                               | Distances in **pixels**. Each distance is mapped to an index starting at `1`.                                                                              |
+| `delays`    | Number[] | `[100, 350]`                             | Delays in **milliseconds**. Each delay is mapped to a letter starting at `a`.                                                                              |
+| `duration`  | Number   | `600`                                    | Duration of the animations in **milliseconds**.                                                                                                            |
+| `easing`    | String   | `cubic-bezier(0.5, 0, 0, 1)`             | CSS animation easing.                                                                                                                                      |
 
 ## Conditionally Reveal
 
 Use the directive value to decide if the smooth reveal should be applied.
-If the value is false, the element will not be handled and you must add the 'revealed' class or styles yourself:
+If the value is false, the element will not be handled and you must add the 'revealed' class or styles yourself, if the element should still be visible:
 
 ```Vue
 <div class="sr-hidden"
@@ -52,7 +62,7 @@ If the value is false, the element will not be handled and you must add the 'rev
 
 ## Custom Revelation Event
 
-If you use the `wait` modifier, the plug-in will wait for the `sr-ready` event to be emitted on the specified base before revealing, even if it is already in the viewport.
+If you use the `wait` modifier, the plug-in will wait for the `sr-ready` event to be emitted on the specified base (using the css class `.sr-base`) before revealing, even if it is already in the viewport.
 
 ```Vue
 <template>
@@ -97,11 +107,3 @@ In order to hide all elements that will be revealed later, add the following to 
     }
 }
 ```
-
-## Common Pitfalls
-
-Don't worry, I've lost some hair over these little mistakes myself:
-
-- Don't conditionally render the image but use a parent div as `.sr-base`. The `.sr-base` element is primarily used as a
-base element for `ImagesLoaded`. If the image is not yet added to the DOM, or doesn't yet have its final source, `ImagesLoaded`
-will report that all images have loaded and your elements will reveal prematurely.
