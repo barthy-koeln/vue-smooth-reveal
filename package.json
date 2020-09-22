@@ -1,6 +1,6 @@
 {
   "name": "vue-smooth-reveal",
-  "version": "0.2.7",
+  "version": "1.0.0",
   "description": "Vue.js plug-in inspired by scrollreveal/scrollreveal.",
   "main": "src/VueSmoothReveal.js",
   "repository": "https://github.com/barthy-koeln/vue-smooth-reveal",
