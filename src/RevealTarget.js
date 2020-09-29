@@ -12,40 +12,40 @@ const BUFFER_TIME = 100
  * Handles the smooth revelation of a DOM node
  */
 export class RevealTarget {
-
   /**
    *
    * @param {HTMLElement} element
-   * @param {DirectiveBinding} binding
-   * @param {VNode} vnode
+   * @param {Object} binding
+   * @param {Object} vNode
    * @param {VueSmoothRevealOptions} options
    */
-  constructor (element, binding, vnode, options) {
-    this.element   = element
-    this.vnode     = vnode
+  constructor (element, binding, vNode, options) {
+    this.element = element
     this.modifiers = binding.modifiers
-    this.delay     = options.delays[binding.arg[2].charCodeAt(0) - 97]
-    this.duration  = options.duration
-    this.easing    = options.easing
+    this.delay = options.delays[binding.arg[2].charCodeAt(0) - 97]
+    this.duration = options.duration
+    this.easing = options.easing
     this.distances = options.distances
-    this.argument  = binding.arg
+    this.argument = binding.arg
 
     this.offsetTransform = ''
+
+    this.intersectionObserverCallback = this.intersectionObserverCallback.bind(this)
   }
 
   /**
    * Calculate the transformation matrix
    */
   calcOffsetTransform () {
-    const origin        = this.argument[0]
+    const origin = this.argument[0]
     const distanceIndex = parseInt(this.argument[1], 10)
-    const distance      = this.distances[distanceIndex - 1]
+    const distance = this.distances[distanceIndex - 1]
 
     const x = origin === 'l' ? -distance : (origin === 'r' ? distance : 0)
     const y = origin === 't' ? -distance : (origin === 'b' ? distance : 0)
 
     const transform = matrixTranslate(x, y)
-    const scale     = matrixScale(0.99)
+    const scale = matrixScale(0.99)
 
     const final = [
       matrixFromString(this.initialTransform),
@@ -75,16 +75,16 @@ export class RevealTarget {
     return new Promise(function (resolve) {
       const transitionOptions = `${$self.duration}ms ${$self.easing}`
 
-      const computedStyle    = getComputedStyle($self.element)
+      const computedStyle = window.getComputedStyle($self.element)
       $self.initialTransform = computedStyle.transform
-      $self.initialOpacity   = computedStyle.opacity
+      $self.initialOpacity = computedStyle.opacity
 
       $self.calcOffsetTransform()
 
-      $self.element.style.opacity   = '0'
+      $self.element.style.opacity = '0'
       $self.element.style.transform = $self.offsetTransform
 
-      requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
         $self.element.style.transition = `transform ${transitionOptions}, opacity ${transitionOptions}`
 
         resolve()
@@ -102,10 +102,10 @@ export class RevealTarget {
 
     return new Promise(function (resolve) {
       setTimeout(function () {
-        requestAnimationFrame(function () {
+        window.requestAnimationFrame(function () {
           $self.element.style.visibility = 'visible'
-          $self.element.style.transform  = $self.initialTransform
-          $self.element.style.opacity    = $self.initialOpacity
+          $self.element.style.transform = $self.initialTransform
+          $self.element.style.opacity = $self.initialOpacity
           resolve()
         })
       }, $self.delay)
@@ -122,7 +122,7 @@ export class RevealTarget {
 
     return new Promise(function (resolve) {
       setTimeout(function () {
-        requestAnimationFrame(function () {
+        window.requestAnimationFrame(function () {
           $self.element.style.removeProperty('transition')
           $self.element.style.removeProperty('transform')
           $self.element.style.removeProperty('opacity')
@@ -142,7 +142,7 @@ export class RevealTarget {
       return this.baseElement
     }
 
-    if (this.modifiers.parent === true) {
+    if (Object.prototype.hasOwnProperty.call(this.modifiers, 'parent')) {
       this.baseElement = this.element.closest('.sr-base')
       return this.baseElement
     }
@@ -156,7 +156,7 @@ export class RevealTarget {
       return this.imagesLoadedElement
     }
 
-    if (this.modifiers.first === true) {
+    if (Object.prototype.hasOwnProperty.call(this.modifiers, 'first')) {
       this.imagesLoadedElement = this.getBaseElement().querySelector('.sr-first-image')
       return this.imagesLoadedElement
     }
@@ -166,7 +166,19 @@ export class RevealTarget {
   }
 
   /**
+   * @param {IntersectionObserverEntry[]} entries
+   * @param {IntersectionObserver} observer
+   */
+  intersectionObserverCallback (entries, observer) {
+    if (entries[0].isIntersecting) {
+      observer.disconnect()
+      this.reveal()
+    }
+  }
+
+  /**
    * Chain all necessary steps
+   *
    * @return {Promise<void>}
    */
   async reveal () {
