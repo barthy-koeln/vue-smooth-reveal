@@ -107,15 +107,18 @@ class SmoothReveal {
     }
 
     await vNode.context.$nextTick()
-    this.observeWhenImagesLoaded(revealTarget.getImagesLoadedElement(), element)
+    this.observeWhenImagesLoaded(revealTarget)
   }
 
   /**
    *
-   * @param {Element} imagesLoadedElement
-   * @param {Element} baseElement
+   * @param {RevealTarget} revealTarget
    */
-  observeWhenImagesLoaded (imagesLoadedElement, baseElement) {
+  observeWhenImagesLoaded (revealTarget) {
+    const imagesLoadedElement = revealTarget.getImagesLoadedElement()
+    const baseElement = revealTarget.getBaseElement()
+    const revealElement = revealTarget.element
+
     if (!this.imagesLoadedMap.has(imagesLoadedElement)) {
       this.imagesLoadedMap.set(imagesLoadedElement, new ImagesLoaded(imagesLoadedElement))
     }
@@ -123,7 +126,7 @@ class SmoothReveal {
     this.imagesLoadedMap.get(imagesLoadedElement).once('always', () => {
       baseElement.dispatchEvent(new window.CustomEvent('images-loaded'))
       this.imagesLoadedMap.delete(imagesLoadedElement)
-      this.observer.observe(baseElement)
+      this.observer.observe(revealElement)
     })
   }
 
