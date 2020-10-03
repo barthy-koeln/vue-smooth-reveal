@@ -15,11 +15,16 @@ import { RevealTarget } from './RevealTarget.js'
  *
  * @property {VueSmoothRevealOptions} options
  * @property {IntersectionObserverInit} intersectionObserverOptions
- * @property {WeakMap} imagesLoadedPromises
+ * @property {WeakMap<Element, ImagesLoaded>} imagesLoadedPromises
+ * @property {WeakMap<Element, RevealTarget>} targetMap
  */
 class SmoothReveal {
   constructor () {
-    this.imagesLoadedPromises = new WeakMap()
+    this.imagesLoadedMap = new WeakMap()
+    this.targetMap = new WeakMap()
+
+    this.vueComponentInserted = this.vueComponentInserted.bind(this)
+    this.observerCallback = this.observerCallback.bind(this)
   }
 
   /**
@@ -92,72 +97,53 @@ class SmoothReveal {
       return
     }
 
-    const $self = this
-    const revealTarget = new RevealTarget(element, binding, vNode, $self.options)
-    revealTarget.hideElement()
+    const revealTarget = new RevealTarget(element, binding, vNode, this.options)
+    this.targetMap.set(element, revealTarget)
 
     if (binding.modifiers.wait) {
-      vNode.context.$once('sr-ready', function () {
-        $self.listenAndObserve(revealTarget)
-      })
+      vNode.context.$once('sr-ready', () => this.observer.observe(element))
 
       return
     }
 
     await vNode.context.$nextTick()
-    await this.getOrCreateImagesLoadedPromise(revealTarget)
-
-    $self.listenAndObserve(revealTarget)
+    this.observeWhenImagesLoaded(revealTarget)
   }
 
   /**
    *
    * @param {RevealTarget} revealTarget
-   * @return {Promise<void>}
    */
-  getOrCreateImagesLoadedPromise (revealTarget) {
+  observeWhenImagesLoaded (revealTarget) {
     const imagesLoadedElement = revealTarget.getImagesLoadedElement()
-    if (this.imagesLoadedPromises.has(imagesLoadedElement)) {
-      return this.imagesLoadedPromises.get(imagesLoadedElement)
+    const baseElement = revealTarget.getBaseElement()
+    const revealElement = revealTarget.element
+
+    if (!this.imagesLoadedMap.has(imagesLoadedElement)) {
+      this.imagesLoadedMap.set(imagesLoadedElement, new ImagesLoaded(imagesLoadedElement))
     }
 
-    const promise = new Promise(function (resolve) {
-      ImagesLoaded(
-        revealTarget.getImagesLoadedElement(),
-        function () {
-          revealTarget.getBaseElement().dispatchEvent(new window.CustomEvent('images-loaded'))
-          resolve()
-        }
-      )
+    this.imagesLoadedMap.get(imagesLoadedElement).once('always', () => {
+      baseElement.dispatchEvent(new window.CustomEvent('images-loaded'))
+      this.imagesLoadedMap.delete(imagesLoadedElement)
+      this.observer.observe(revealElement)
     })
-
-    this.imagesLoadedPromises.set(imagesLoadedElement, promise)
-
-    return promise
   }
 
   /**
-   * Wait until the component activates, then start observing the node
-   *
-   * @param {RevealTarget} revealTarget
+   * @param {IntersectionObserverEntry[]} entries
    */
-  listenAndObserve (revealTarget) {
-    revealTarget.hideElement()
-    this.startObserving(revealTarget)
-  }
+  observerCallback (entries) {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) {
+        continue
+      }
 
-  /**
-   * Start observing the node
-   *
-   * @param {RevealTarget} revealTarget
-   */
-  startObserving (revealTarget) {
-    const observer = new window.IntersectionObserver(
-      revealTarget.intersectionObserverCallback,
-      this.intersectionObserverOptions
-    )
-
-    observer.observe(revealTarget.getBaseElement())
+      const target = entry.target
+      this.observer.unobserve(target)
+      this.targetMap.get(target).reveal()
+      this.targetMap.delete(target)
+    }
   }
 
   /**
@@ -169,8 +155,10 @@ class SmoothReveal {
   install (Vue, options) {
     this.setOptions(options)
 
+    this.observer = new window.IntersectionObserver(this.observerCallback, this.intersectionObserverOptions)
+
     Vue.directive('smooth-reveal', {
-      inserted: this.vueComponentInserted.bind(this)
+      inserted: this.vueComponentInserted
     })
   }
 }
