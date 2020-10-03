@@ -20,7 +20,7 @@ import { RevealTarget } from './RevealTarget.js'
  */
 class SmoothReveal {
   constructor () {
-    this.imagesLoadedElements = new WeakMap()
+    this.imagesLoadedMap = new WeakMap()
     this.targetMap = new WeakMap()
 
     this.vueComponentInserted = this.vueComponentInserted.bind(this)
@@ -116,13 +116,13 @@ class SmoothReveal {
    * @param {Element} baseElement
    */
   observeWhenImagesLoaded (imagesLoadedElement, baseElement) {
-    if (!this.imagesLoadedElements.has(imagesLoadedElement)) {
-      this.imagesLoadedElements.set(imagesLoadedElement, new ImagesLoaded(imagesLoadedElement))
+    if (!this.imagesLoadedMap.has(imagesLoadedElement)) {
+      this.imagesLoadedMap.set(imagesLoadedElement, new ImagesLoaded(imagesLoadedElement))
     }
 
-    this.imagesLoadedElements.get(imagesLoadedElement).on('always', () => {
+    this.imagesLoadedMap.get(imagesLoadedElement).once('always', () => {
       baseElement.dispatchEvent(new window.CustomEvent('images-loaded'))
-      this.imagesLoadedElements.delete(imagesLoadedElement)
+      this.imagesLoadedMap.delete(imagesLoadedElement)
       this.observer.observe(baseElement)
     })
   }
@@ -136,9 +136,10 @@ class SmoothReveal {
         continue
       }
 
-      this.observer.unobserve(entry.target)
-      this.targetMap.get(entry.target).reveal()
-      this.targetMap.delete(entry.target)
+      const target = entry.target
+      this.observer.unobserve(target)
+      this.targetMap.get(target).reveal()
+      this.targetMap.delete(target)
     }
   }
 
