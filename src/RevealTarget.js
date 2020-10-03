@@ -30,7 +30,7 @@ export class RevealTarget {
 
     this.offsetTransform = ''
 
-    this.intersectionObserverCallback = this.intersectionObserverCallback.bind(this)
+    this.hideElement()
   }
 
   /**
@@ -166,24 +166,15 @@ export class RevealTarget {
   }
 
   /**
-   * @param {IntersectionObserverEntry[]} entries
-   * @param {IntersectionObserver} observer
-   */
-  intersectionObserverCallback (entries, observer) {
-    if (entries[0].isIntersecting) {
-      observer.disconnect()
-      this.reveal()
-    }
-  }
-
-  /**
    * Chain all necessary steps
    *
-   * @return {Promise<void>}
+   * @return {null}
    */
   async reveal () {
     await this.prepareElement()
     await this.revealElement()
     await this.resetElement()
+
+    return null
   }
 }
