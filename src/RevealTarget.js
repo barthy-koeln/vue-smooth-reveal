@@ -6,8 +6,6 @@ import {
   translate as matrixTranslate
 } from 'rematrix'
 
-const BUFFER_TIME = 100
-
 /**
  * Handles the smooth revelation of a DOM node
  */
@@ -34,7 +32,27 @@ export class RevealTarget {
   }
 
   /**
+   * @return {Promise<void>}
+   */
+  static async sleep (delay) {
+    return new Promise(function (resolve) {
+      window.setTimeout(resolve, delay)
+    })
+  }
+
+  /**
+   * @return {Promise<void>}
+   */
+  static async nextFrame () {
+    return new Promise(function (resolve) {
+      window.requestAnimationFrame(resolve)
+    })
+  }
+
+  /**
    * Calculate the transformation matrix
+   *
+   * @return {void}
    */
   calcOffsetTransform () {
     const origin = this.argument[0]
@@ -58,6 +76,8 @@ export class RevealTarget {
 
   /**
    * Hide the element
+   *
+   * @return {void}
    */
   hideElement () {
     this.element.style.visibility = 'hidden'
@@ -69,27 +89,20 @@ export class RevealTarget {
    *
    * @return {Promise<void>}
    */
-  prepareElement () {
-    const $self = this
+  async prepareElement () {
+    const transitionOptions = `${this.duration}ms ${this.easing}`
 
-    return new Promise(function (resolve) {
-      const transitionOptions = `${$self.duration}ms ${$self.easing}`
+    const computedStyle = window.getComputedStyle(this.element)
+    this.initialTransform = computedStyle.transform
+    this.initialOpacity = computedStyle.opacity
 
-      const computedStyle = window.getComputedStyle($self.element)
-      $self.initialTransform = computedStyle.transform
-      $self.initialOpacity = computedStyle.opacity
+    this.calcOffsetTransform()
 
-      $self.calcOffsetTransform()
+    this.element.style.opacity = '0'
+    this.element.style.transform = this.offsetTransform
 
-      $self.element.style.opacity = '0'
-      $self.element.style.transform = $self.offsetTransform
-
-      window.requestAnimationFrame(function () {
-        $self.element.style.transition = `transform ${transitionOptions}, opacity ${transitionOptions}`
-
-        resolve()
-      })
-    })
+    await RevealTarget.nextFrame()
+    this.element.style.transition = `transform ${transitionOptions}, opacity ${transitionOptions}`
   }
 
   /**
@@ -97,19 +110,13 @@ export class RevealTarget {
    *
    * @return {Promise<void>}
    */
-  revealElement () {
-    const $self = this
+  async revealElement () {
+    await RevealTarget.sleep(this.delay)
+    await RevealTarget.nextFrame()
 
-    return new Promise(function (resolve) {
-      setTimeout(function () {
-        window.requestAnimationFrame(function () {
-          $self.element.style.visibility = 'visible'
-          $self.element.style.transform = $self.initialTransform
-          $self.element.style.opacity = $self.initialOpacity
-          resolve()
-        })
-      }, $self.delay)
-    })
+    this.element.style.visibility = 'visible'
+    this.element.style.transform = this.initialTransform
+    this.element.style.opacity = this.initialOpacity
   }
 
   /**
@@ -117,19 +124,13 @@ export class RevealTarget {
    *
    * @return {Promise<void>}
    */
-  resetElement () {
-    const $self = this
+  async resetElement () {
+    await RevealTarget.sleep(this.duration + 100)
+    await RevealTarget.nextFrame()
 
-    return new Promise(function (resolve) {
-      setTimeout(function () {
-        window.requestAnimationFrame(function () {
-          $self.element.style.removeProperty('transition')
-          $self.element.style.removeProperty('transform')
-          $self.element.style.removeProperty('opacity')
-          resolve()
-        })
-      }, $self.duration + BUFFER_TIME)
-    })
+    this.element.style.removeProperty('transition')
+    this.element.style.removeProperty('transform')
+    this.element.style.removeProperty('opacity')
   }
 
   /**
@@ -143,7 +144,7 @@ export class RevealTarget {
     }
 
     if (Object.prototype.hasOwnProperty.call(this.modifiers, 'parent')) {
-      this.baseElement = this.element.closest('.sr-base')
+      this.baseElement = this.element.closest('.smooth-reveal-base')
       return this.baseElement
     }
 
@@ -151,18 +152,35 @@ export class RevealTarget {
     return this.baseElement
   }
 
+  /**
+   * Figure out the ImagesLoaded element and cache it
+   *
+   * @return {HTMLElement}
+   */
   getImagesLoadedElement () {
     if (this.imagesLoadedElement) {
       return this.imagesLoadedElement
     }
 
     if (Object.prototype.hasOwnProperty.call(this.modifiers, 'first')) {
-      this.imagesLoadedElement = this.getBaseElement().querySelector('.sr-first-image')
+      this.imagesLoadedElement = this.getBaseElement().querySelector('.smooth-reveal-first-image')
       return this.imagesLoadedElement
     }
 
     this.imagesLoadedElement = this.getBaseElement()
     return this.imagesLoadedElement
+  }
+
+  /**
+   * Dispatch a CustomEvent on the base element
+   *
+   * @param {String} event
+   * @param {any} detail
+   *
+   * @return {Boolean}
+   */
+  dispatch (event, detail = undefined) {
+    return this.getBaseElement().dispatchEvent(new window.CustomEvent(event, { detail: detail }))
   }
 
   /**

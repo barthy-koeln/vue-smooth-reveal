@@ -1,5 +1,21 @@
 {
   "extends": [
-    "standard"
-  ]
+    "eslint:recommended",
+    "plugin:compat/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "sourceType": "module"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "settings": {
+    "polyfills": [
+      "IntersectionObserver",
+      "Promise"
+    ]
+  }
 }

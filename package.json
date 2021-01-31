@@ -2,11 +2,22 @@
   "name": "vue-smooth-reveal",
   "version": "1.1.0",
   "description": "Vue.js plug-in inspired by scrollreveal/scrollreveal.",
+  "keywords": [
+    "scrollreveal",
+    "scroll animation",
+    "reveal"
+  ],
   "main": "src/VueSmoothReveal.js",
+  "module": "src/VueSmoothReveal.js",
   "repository": "https://github.com/barthy-koeln/vue-smooth-reveal",
   "author": "Barthy Bonhomme <post@barthy.koeln>",
+  "browserslist": [
+    "defaults"
+  ],
   "license": "MIT",
   "private": false,
+  "sideEffects": false,
+  "type": "module",
   "dependencies": {
     "imagesloaded": "^4.1.4",
     "rematrix": "^0.4.1",
@@ -16,6 +27,7 @@
     "core-js": "^3",
     "eslint": "^7.9.0",
     "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-compat": "^3.9.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",

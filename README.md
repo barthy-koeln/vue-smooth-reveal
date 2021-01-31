@@ -28,7 +28,7 @@ Vue.use(VueSmoothReveal, {
 
 ```vue
 <template>
-    <div class="sr-hidden"
+    <div class="smooth-reveal-hidden"
          v-smooth-reveal:r1a
     ></div>
 </template>
@@ -57,7 +57,7 @@ Use the directive value to decide if the smooth reveal should be applied.
 If the value is false, the element will not be handled and you must add the 'revealed' class or styles yourself, if the element should still be visible:
 
 ```Vue
-<div class="sr-hidden"
+<div class="smooth-reveal-hidden"
      :class="{'revealed': someCondition}"
      v-smooth-reveal:r1a="!someCondition"
 ></div>
@@ -65,12 +65,12 @@ If the value is false, the element will not be handled and you must add the 'rev
 
 ## Custom Revelation Event
 
-If you use the `wait` modifier, the plug-in will wait for the `sr-ready` event to be emitted on the specified base (using the css class `.sr-base`) before revealing, even if it is already in the viewport.
+If you use the `wait` modifier, the plug-in will wait for the `smooth-reveal-ready` event to be emitted on the specified base (using the css class `.smooth-reveal-base`) before revealing, even if it is already in the viewport.
 
 ```Vue
 <template>
-    <div class="sr-base">
-        <div class="sr-hidden"
+    <div class="smooth-reveal-base">
+        <div class="smooth-reveal-hidden"
             v-smooth-reveal:r1a.wait
         >
         </div>
@@ -81,12 +81,12 @@ If you use the `wait` modifier, the plug-in will wait for the `sr-ready` event t
 ## ImagesLoaded
 
 The plug-in will automatically wait for all contained images to be loaded before revealing, even if it is already in the viewport.
-If you want to reveal an element once one of its parent's contained images load, add the `.sr-base` class and use the following modifiers:
+If you want to reveal an element once one of its parent's contained images load, add the `.smooth-reveal-base` class and use the following modifiers:
 
 ```Vue
 <template>
-    <div class="sr-base">
-        <div class="sr-hidden"
+    <div class="smooth-reveal-base">
+        <div class="smooth-reveal-hidden"
             v-smooth-reveal:r1a.parent
         >
             <img src="/image.jpg" alt="the div will only reveal once this image is loaded">
@@ -102,7 +102,7 @@ If you want to reveal an element once one of its parent's contained images load,
 In order to hide all elements that will be revealed later, add the following to your stylesheet:
 
 ```SCSS
-.sr-hidden {
+.smooth-reveal-hidden {
     visibility: hidden;
 
     &.revealed {

@@ -18,7 +18,8 @@ import { RevealTarget } from './RevealTarget.js'
  * @property {WeakMap<Element, ImagesLoaded>} imagesLoadedPromises
  * @property {WeakMap<Element, RevealTarget>} targetMap
  */
-class SmoothReveal {
+export class SmoothReveal {
+
   constructor () {
     this.imagesLoadedMap = new WeakMap()
     this.targetMap = new WeakMap()
@@ -68,7 +69,7 @@ class SmoothReveal {
      */
     this.intersectionObserverOptions = {
       threshold: this.options.threshold,
-      rootMargin: `${this.options.offset.top}px ${this.options.offset.right}px ${this.options.offset.bottom}px ${this.options.offset.left}px`
+      rootMargin: ['top', 'right', 'bottom', 'left'].map(key => `${this.options.offset[key]}px`).join(' ')
     }
   }
 
@@ -101,7 +102,7 @@ class SmoothReveal {
     this.targetMap.set(element, revealTarget)
 
     if (binding.modifiers.wait) {
-      vNode.context.$once('sr-ready', () => this.observer.observe(element))
+      vNode.context.$once('smooth-reveal-ready', () => this.observer.observe(element))
 
       return
     }
@@ -111,23 +112,46 @@ class SmoothReveal {
   }
 
   /**
+   * Attach a listener for a RevealTarget to the IntersectionObserver
    *
    * @param {RevealTarget} revealTarget
    */
   observeWhenImagesLoaded (revealTarget) {
-    const imagesLoadedElement = revealTarget.getImagesLoadedElement()
-    const baseElement = revealTarget.getBaseElement()
-    const revealElement = revealTarget.element
+    const imagesLoaded = this.getOrCreateImagesLoaded(revealTarget)
 
-    if (!this.imagesLoadedMap.has(imagesLoadedElement)) {
-      this.imagesLoadedMap.set(imagesLoadedElement, new ImagesLoaded(imagesLoadedElement))
+    imagesLoaded.once('always', () => {
+      this.observer.observe(revealTarget.element)
+    })
+  }
+
+  /**
+   * Create a new ImagesLoaded instance for a RevealTarget's ImagesLoaded element, or return an already existing one
+   * @param {RevealTarget} revealTarget
+   */
+  getOrCreateImagesLoaded (revealTarget) {
+    const element = revealTarget.getImagesLoadedElement()
+
+    if (!this.imagesLoadedMap.has(element)) {
+      this.imagesLoadedMap.set(element, this.createImagesLoaded(revealTarget))
     }
 
-    this.imagesLoadedMap.get(imagesLoadedElement).once('always', () => {
-      baseElement.dispatchEvent(new window.CustomEvent('images-loaded'))
-      this.imagesLoadedMap.delete(imagesLoadedElement)
-      this.observer.observe(revealElement)
+    return this.imagesLoadedMap.get(element)
+  }
+
+  /**
+   * Create a new ImagesLoaded instance and attach a listener that later deletes it.
+   * @param {RevealTarget} revealTarget
+   */
+  createImagesLoaded (revealTarget) {
+    const element = revealTarget.getImagesLoadedElement()
+    const imagesLoaded = new ImagesLoaded(element)
+
+    imagesLoaded.once('always', () => {
+      revealTarget.dispatch('images-loaded')
+      this.imagesLoadedMap.delete(element)
     })
+
+    return imagesLoaded
   }
 
   /**
@@ -162,5 +186,3 @@ class SmoothReveal {
     })
   }
 }
-
-export const VueSmoothReveal = new SmoothReveal()
