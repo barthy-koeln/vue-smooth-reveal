@@ -9,9 +9,9 @@ Vue.js plug-in inspired by [scrollreveal/scrollreveal](https://github.com/scroll
 
 ```js
 import Vue                 from 'vue'
-import { VueSmoothReveal } from 'vue-smooth-reveal'
+import { SmoothReveal } from 'vue-smooth-reveal'
 
-Vue.use(VueSmoothReveal, {
+Vue.use(new SmoothReveal(), {
   threshold: .5,
   offset: {
     top: 0,

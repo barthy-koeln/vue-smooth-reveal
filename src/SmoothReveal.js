@@ -117,7 +117,7 @@ export class SmoothReveal {
    * @param {RevealTarget} revealTarget
    */
   observeWhenImagesLoaded (revealTarget) {
-    const imagesLoaded = this.getOrCreateImagesLoaded(revealTarget)
+    const imagesLoaded = this.obtainImagesLoaded(revealTarget)
 
     imagesLoaded.once('always', () => {
       this.observer.observe(revealTarget.element)
@@ -128,7 +128,7 @@ export class SmoothReveal {
    * Create a new ImagesLoaded instance for a RevealTarget's ImagesLoaded element, or return an already existing one
    * @param {RevealTarget} revealTarget
    */
-  getOrCreateImagesLoaded (revealTarget) {
+  obtainImagesLoaded (revealTarget) {
     const element = revealTarget.getImagesLoadedElement()
 
     if (!this.imagesLoadedMap.has(element)) {

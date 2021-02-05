@@ -7,8 +7,8 @@
     "scroll animation",
     "reveal"
   ],
-  "main": "src/VueSmoothReveal.js",
-  "module": "src/VueSmoothReveal.js",
+  "main": "src/SmoothReveal.js",
+  "module": "src/SmoothReveal.js",
   "repository": "https://github.com/barthy-koeln/vue-smooth-reveal",
   "author": "Barthy Bonhomme <post@barthy.koeln>",
   "browserslist": [
