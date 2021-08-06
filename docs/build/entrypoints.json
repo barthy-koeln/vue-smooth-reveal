@@ -1,0 +1,10 @@
+{
+  "entrypoints": {
+    "index": {
+      "js": [
+        "/build/runtime.js",
+        "/build/index.js"
+      ]
+    }
+  }
+}

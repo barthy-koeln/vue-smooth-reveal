@@ -7,11 +7,11 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
 Encore
   .enableSingleRuntimeChunk()
 
-  .setOutputPath(`public/build`)
+  .setOutputPath(`docs/build`)
   .setPublicPath(`/build`)
 
   .cleanupOutputBeforeBuild()
-  .addEntry('index', './public/index.js')
+  .addEntry('index', './docs/index.js')
 
   .enableVueLoader(
     () => {
