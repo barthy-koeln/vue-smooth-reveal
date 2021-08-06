@@ -14,7 +14,7 @@ import { RevealTarget } from './RevealTarget.js'
  * Handles smooth revelation of DOM elements inspired by https://github.com/scrollreveal/scrollreveal
  *
  * @property {VueSmoothRevealOptions} options
- * @property {IntersectionObserverInit} intersectionObserverOptions
+ * @property {IntersectionObserverInit} observerOptions
  * @property {WeakMap<Element, ImagesLoaded>} imagesLoadedPromises
  * @property {WeakMap<Element, RevealTarget>} targetMap
  */
@@ -24,7 +24,7 @@ export class SmoothReveal {
     this.imagesLoadedMap = new WeakMap()
     this.targetMap = new WeakMap()
 
-    this.vueComponentInserted = this.vueComponentInserted.bind(this)
+    this.vueComponentMounted = this.vueComponentMounted.bind(this)
     this.observerCallback = this.observerCallback.bind(this)
   }
 
@@ -67,7 +67,7 @@ export class SmoothReveal {
     /**
      * @type {IntersectionObserverInit}
      */
-    this.intersectionObserverOptions = {
+    this.observerOptions = {
       threshold: this.options.threshold,
       rootMargin: ['top', 'right', 'bottom', 'left'].map(key => `${this.options.offset[key]}px`).join(' ')
     }
@@ -80,10 +80,15 @@ export class SmoothReveal {
    * @return {Boolean}
    */
   bindingIsValid (binding) {
-    const validValue = typeof binding.value === 'undefined' || binding.value === true
-    const validArgument = binding.arg && binding.arg.length === 3 && binding.arg.match(/[lrtb][0-9]*[a-z]/) !== null
+    const { value } = binding
+    const isValidString = typeof value === 'string' && this.settingIsValid(value)
+    const isValidArray = Array.isArray(value) && value.length === 2 && this.settingIsValid(value[0])
 
-    return validValue && validArgument
+    return isValidString || isValidArray
+  }
+
+  settingIsValid (value) {
+    return value.length === 3 && value.match(/[lrtb][0-9]*[a-z]/) !== null
   }
 
   /**
@@ -93,21 +98,29 @@ export class SmoothReveal {
    * @param {Object} binding
    * @param {Object} vNode
    */
-  async vueComponentInserted (element, binding, vNode) {
+  async vueComponentMounted (element, binding, vNode) {
     if (!this.bindingIsValid(binding)) {
+      throw new Error(
+        '[VueSmoothReveal]: The directive binding is invalid. Make sure it matches /[lrtb][0-9]*[a-z]/ or is an array like [setting (string), enabled (bool)]. Value passed: ' + JSON.stringify(binding.value))
+    }
+
+    if (Array.isArray && !binding.value[1]) {
+      element.classList.add('revealed')
       return
     }
+
+    element.classList.add('smooth-reveal-hidden')
 
     const revealTarget = new RevealTarget(element, binding, vNode, this.options)
     this.targetMap.set(element, revealTarget)
 
     if (binding.modifiers.wait) {
-      vNode.context.$once('smooth-reveal-ready', () => this.observer.observe(element))
+      binding.instance.$once('smooth-reveal-ready', () => this.observer.observe(element))
 
       return
     }
 
-    await vNode.context.$nextTick()
+    await binding.instance.$nextTick()
     this.observeWhenImagesLoaded(revealTarget)
   }
 
@@ -179,10 +192,10 @@ export class SmoothReveal {
   install (Vue, options) {
     this.setOptions(options)
 
-    this.observer = new window.IntersectionObserver(this.observerCallback, this.intersectionObserverOptions)
+    this.observer = new window.IntersectionObserver(this.observerCallback, this.observerOptions)
 
     Vue.directive('smooth-reveal', {
-      inserted: this.vueComponentInserted
+      mounted: this.vueComponentMounted
     })
   }
 }

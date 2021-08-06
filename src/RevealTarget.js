@@ -20,11 +20,12 @@ export class RevealTarget {
   constructor (element, binding, vNode, options) {
     this.element = element
     this.modifiers = binding.modifiers
-    this.delay = options.delays[binding.arg[2].charCodeAt(0) - 97]
+    this.argument = Array.isArray(binding.value) ? binding.value[0] : binding.value
+    this.delay = options.delays[this.argument.charCodeAt(2) - 97]
     this.duration = options.duration
     this.easing = options.easing
     this.distances = options.distances
-    this.argument = binding.arg
+
 
     this.offsetTransform = ''
 

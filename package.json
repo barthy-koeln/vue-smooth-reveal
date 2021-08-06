@@ -1,6 +1,6 @@
 {
   "name": "vue-smooth-reveal",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Vue.js plug-in inspired by scrollreveal/scrollreveal.",
   "keywords": [
     "scrollreveal",
@@ -9,6 +9,9 @@
   ],
   "main": "src/SmoothReveal.js",
   "module": "src/SmoothReveal.js",
+  "files": [
+    "src/**/*"
+  ],
   "repository": "https://github.com/barthy-koeln/vue-smooth-reveal",
   "author": "Barthy Bonhomme <post@barthy.koeln>",
   "browserslist": [
@@ -20,11 +23,22 @@
   "type": "module",
   "dependencies": {
     "imagesloaded": "^4.1.4",
-    "rematrix": "^0.4.1",
+    "rematrix": "^0.4.1"
+  },
+  "peerDependencies": {
     "vue": "^2.6|^3.0"
   },
+  "scripts": {
+    "dev": "encore dev",
+    "build": "encore production",
+    "watch": "encore dev --watch"
+  },
   "devDependencies": {
-    "core-js": "^3",
+    "@babel/plugin-transform-runtime": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "@symfony/webpack-encore": "^1.5.0",
+    "@vue/compiler-sfc": "^3.1.5",
+    "core-js": "^3.16.0",
     "eslint": "^7.9.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-compat": "^3.9.0",
@@ -33,7 +47,9 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "husky": "^4.3.0",
-    "regenerator-runtime": "^0.13.3"
+    "regenerator-runtime": "^0.13.3",
+    "vue": "^3.0",
+    "vue-loader": "^16.1.0"
   },
   "husky": {
     "hooks": {

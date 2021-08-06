@@ -5,37 +5,41 @@
 
 Vue.js plug-in inspired by [scrollreveal/scrollreveal](https://github.com/scrollreveal/scrollreveal).
 
+## Legacy
+
+For usage with Vue.js v2, use this packages v1.1.0 (you can [find the docs here](https://github.com/barthy-koeln/vue-smooth-reveal/tree/1500defa884f480f2225a673bd6c710cb99281cb)).
+
 ## Usage
 
 ```js
-import Vue                 from 'vue'
+import { createApp } from 'vue'
 import { SmoothReveal } from 'vue-smooth-reveal'
 
-Vue.use(new SmoothReveal(), {
-  threshold: .5,
-  offset: {
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0
-  },
-  distances: [30, 60],
-  delays: [100, 350],
-  duration: 600,
-  easing: 'cubic-bezier(0.5, 0, 0, 1)'
-})
+createApp({ /* ... */ })
+  .use(new SmoothReveal(), {
+    threshold: .5,
+    offset: {
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0
+    },
+    distances: [30, 60],
+    delays: [100, 350],
+    duration: 600,
+    easing: 'cubic-bezier(0.5, 0, 0, 1)'
+  })
+  .mount('#app')
 ```
 
 ```vue
 <template>
-    <div class="smooth-reveal-hidden"
-         v-smooth-reveal:r1a
-    ></div>
+    <div v-smooth-reveal="'r1a'"></div>
 </template>
 ```
 
-The binding argument consists of \[direction\]\[distance\]\[delay\].
-The example above, `v-smooth-reveal:r1a`, reveals an element from the `right`, a distance `1` of `30px` and a delay `a` of `100ms`.
+The binding value consists of \[direction\]\[distance\]\[delay\].
+The example above, `v-smooth-reveal="'r1a'"`, reveals an element from the `right`, a distance `1` of `30px` and a delay `a` of `100ms`.
 
 ## Options
 
@@ -53,14 +57,12 @@ You can add up to 26 different distances and delays. They will respectively be r
 
 ## Conditionally Reveal
 
-Use the directive value to decide if the smooth reveal should be applied.
-If the value is false, the element will not be handled and you must add the 'revealed' class or styles yourself, if the element should still be visible:
+Pass an array as the directive value to decide if the smooth reveal should be applied.
+If the value is false, the element will not be handled.
+You must add the 'revealed' class or styles yourself, if the element should still be visible:
 
 ```Vue
-<div class="smooth-reveal-hidden"
-     :class="{'revealed': someCondition}"
-     v-smooth-reveal:r1a="!someCondition"
-></div>
+<div v-smooth-reveal="['r1a', !someCondition]"></div>
 ```
 
 ## Custom Revelation Event
@@ -70,10 +72,7 @@ If you use the `wait` modifier, the plug-in will wait for the `smooth-reveal-rea
 ```Vue
 <template>
     <div class="smooth-reveal-base">
-        <div class="smooth-reveal-hidden"
-            v-smooth-reveal:r1a.wait
-        >
-        </div>
+        <div v-smooth-reveal.wait="'r1a'"></div>
     </div>
 </template>
 ```
@@ -86,9 +85,7 @@ If you want to reveal an element once one of its parent's contained images load,
 ```Vue
 <template>
     <div class="smooth-reveal-base">
-        <div class="smooth-reveal-hidden"
-            v-smooth-reveal:r1a.parent
-        >
+        <div v-smooth-reveal.parent="'r1a'">
             <img src="/image.jpg" alt="the div will only reveal once this image is loaded">
         </div>
 
@@ -100,6 +97,7 @@ If you want to reveal an element once one of its parent's contained images load,
 ## Initial state
 
 In order to hide all elements that will be revealed later, add the following to your stylesheet:
+These classes will be added automatically.
 
 ```SCSS
 .smooth-reveal-hidden {
